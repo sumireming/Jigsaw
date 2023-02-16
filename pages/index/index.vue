@@ -20,8 +20,8 @@
 		methods: {
 			async getBrand () {
 				console.log('getBrand')
-				let obj = await uniCloud.importObject('brand')
-				let info = obj.method1()
+				let obj = uniCloud.importObject('brand')
+				let info = await obj.method1()
 				console.log(info)
 			}
 		}

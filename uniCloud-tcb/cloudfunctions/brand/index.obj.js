@@ -19,12 +19,11 @@ module.exports = {
 		// 	}
 		// }
 		// 业务逻辑
-		console.log(123)
-		// let info = this.getClientInfo()
+		let info = this.getClientInfo()
 		
 		// 返回结果
 		return {
-			a: 1 //请根据实际需要返回值
+			info
 		}
 	}
 }
