@@ -14,11 +14,16 @@
 				title: 'Hello'
 			}
 		},
-		onLoad() {
-
+		mounted() {
+			this.getBrand()
 		},
 		methods: {
-
+			async getBrand () {
+				console.log('getBrand')
+				let obj = await uniCloud.importObject('brand')
+				let info = obj.method1()
+				console.log(info)
+			}
 		}
 	}
 </script>

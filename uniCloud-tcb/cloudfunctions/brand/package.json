@@ -1,0 +1,7 @@
+{
+  "name": "brand",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}
