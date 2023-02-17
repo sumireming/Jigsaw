@@ -1,0 +1,48 @@
+{
+	"bsonType": "object",
+	"description": "品牌表",
+	"required": ["name"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"name": {
+			"bsonType": "string",
+			"description": "品牌名称"
+		},
+		"other_name": {
+			"bsonType": "array",
+			"arrayType": "string",
+			"description": "品牌别名"
+		},
+		"logo": {
+			"bsonType": "file",
+			"description": "品牌logo图片"
+		},
+		"region_id": {
+			"bsonType": "string",
+			"foreignKey": "region._id",
+			"description": "区域关联id"
+		},
+		"founded_year": {
+			"bsonType": "string",
+			"description": "成立时间（年）"
+		},
+		"website": {
+			"bsonType": "array",
+			"arrayType": "string",
+			"description": "相关网站，可能有官网、店铺等多个网站"
+		},
+		"breif": {
+			"bsonType": "string",
+			"description": "简介"
+		}
+		
+	}
+}

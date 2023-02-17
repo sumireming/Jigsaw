@@ -1,0 +1,29 @@
+{
+	"bsonType": "object",
+	"description": "艺术家表",
+	"required": [],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"name": {
+			"bsonType": "string",
+			"description": "艺术家名字"
+		},
+		"other_names": {
+			"bsonType": "array",
+			"arrayType": "string",
+			"description": "别名"
+		},
+		"breif": {
+			"bsonType": "string",
+			"description": "简介"
+		}
+	}
+}
