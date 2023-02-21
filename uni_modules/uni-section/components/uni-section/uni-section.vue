@@ -65,7 +65,7 @@
 			},
       subTitleFontSize: {
         type: String,
-        default: '12px'
+        default: '22rpx'
       },
       subTitleColor: {
         type: String,
@@ -100,10 +100,11 @@
 	}
 </script>
 <style lang="scss" >
-	$uni-primary: #2979ff !default;
+	$uni-primary: #000000;
 
 	.uni-section {
 		background-color: #fff;
+		margin-bottom: 20rpx;
     .uni-section-header {
       position: relative;
       /* #ifndef APP-NVUE */
@@ -111,7 +112,7 @@
       /* #endif */
       flex-direction: row;
       align-items: center;
-      padding: 12px 10px;
+      padding: 10rpx 0;
       font-weight: normal;
 
       &__decoration{
@@ -144,8 +145,8 @@
         /* #endif */
         flex-direction: column;
         flex: 1;
-        color: #333;
-
+        color: rgba(0, 0, 0, .8);
+		
         .distraction {
           flex-direction: row;
           align-items: center;
@@ -161,7 +162,7 @@
     }
 
     .uni-section-content{
-      font-size: 14px;
+      font-size: 28rpx;
     }
 	}
 </style>

@@ -13,9 +13,16 @@
  */
 
 /* 颜色变量 */
+$ipieces-primary-color: #000000;
+$ipieces-second-color: #ffffff;
+$ipieces-red-color: #ff5757;
+
+$ipieces-text-color: rgba(0, 0, 0, .8);
+$ipieces-text-grey: rgba(0, 0, 0, .5);
+
 
 /* 行为相关颜色 */
-$uni-color-primary: #007aff;
+$uni-color-primary: #000000;
 $uni-color-success: #4cd964;
 $uni-color-warning: #f0ad4e;
 $uni-color-error: #dd524d;

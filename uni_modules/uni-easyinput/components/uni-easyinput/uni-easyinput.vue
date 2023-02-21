@@ -165,7 +165,7 @@ export default {
 		},
 		clearable: {
 			type: Boolean,
-			default: true
+			default: false
 		},
 		autoHeight: {
 			type: Boolean,
@@ -218,7 +218,7 @@ export default {
 		},
 		primaryColor: {
 			type: String,
-			default: '#2979ff'
+			default: '#000000'
 		},
 		styles: {
 			type: Object,
@@ -293,7 +293,7 @@ export default {
 			const borderColor = this.inputBorder && this.msg ? '#dd524d' : focusColor;
 			return obj2strStyle({
 				'border-color': borderColor || '#e5e5e5',
-				'background-color': this.disabled ? this.styles.disableColor : this.styles.backgroundColor
+				'background-color': this.disabled ? this.styles.disableColor : ('rgba(0, 0, 0, .02)' || this.styles.backgroundColor)
 			});
 		},
 		// input右侧样式

@@ -1,63 +1,195 @@
 <template>
-	<view>
-		<uni-section title="拼图品牌">
-			<uni-easyinput v-model="item.name" placeholder="" />
+	<view class="page-wrap">
+		<uni-section type="line"
+			title="品牌名"
+			sub-title="请尽量填写最通俗最常见的品牌叫法">
+			<uni-easyinput v-model="item.name" 
+				:inputBorder="false" />
 		</uni-section>
-		<uni-section title="logo">
+		<uni-section type="line"
+			title="别名"
+			:sub-title="`除上面已填写的品牌名外的其他别名，如“Ravensburger”又名“睿思”，别名可以添加多个`">
+			<view v-for="(name, index) in item.other_name" class="array-item">
+				<uni-easyinput  
+					v-model="item.other_name[index]" 
+					:inputBorder="false"></uni-easyinput>
+				<uni-icons class="del-icon" 
+					type="trash-filled" 
+					size="20" 
+					color="rgba(0, 0, 0, .3)"
+					@click="removeOtherName(index)"></uni-icons>
+			</view>
+			<view class="array-item-action">
+				<view class="add" @click="addOtherName">+添加别名</view>
+			</view>
+		</uni-section>
+		<uni-section type="line" title="LOGO">
 			<uni-file-picker
+				ref="imagefile"
 				v-model="item.logo" 
 				fileMediatype="image" 
 				mode="grid" 
+				:limit="1"
+				:auto-upload="false"
 				@select="imageSelect" 
 				@progress="imageProgress" 
 				@success="imageSuccess" 
 				@fail="imageFail" 
 			></uni-file-picker>
 		</uni-section>
-		<button type="primary" @click="save">保存</button>
+		<uni-section type="line" title="国家/区域">
+			<uni-easyinput v-model="item.region_name"
+				:inputBorder="false"></uni-easyinput>
+		</uni-section>
+		<uni-section type="line" title="成立年">
+			<uni-easyinput v-model="item.founded_year"
+				:inputBorder="false"></uni-easyinput>
+		</uni-section>
+		<uni-section type="line" 
+			title="系列"
+			:sub-title="`通常一些拼图品牌旗下会有很多系列，如Jumbo的“WASGJI悬疑系列”，系列可以添加多个`">
+			<view v-for="(name, index) in item.series" class="array-item">
+				<uni-easyinput  
+					v-model="item.series[index]" 
+					:inputBorder="false"></uni-easyinput>
+				<uni-icons class="del-icon" 
+					type="trash-filled" 
+					size="20" 
+					color="rgba(0, 0, 0, .3)"
+					@click="removeSeries(index)"></uni-icons>
+			</view>
+			<view class="array-item-action">
+				<view class="add" @click="addSeries">+添加系列</view>
+			</view>
+		</uni-section>
+		<uni-section type="line" 
+			title="简介"
+			sub-title="请尽量客观描述品牌特点/特色">
+			<uni-easyinput v-model="item.breif"
+				type="textarea" 
+				autoHeight
+				:inputBorder="false"
+				:maxlength="2000" ></uni-easyinput>
+		</uni-section>
+		<view class="action">
+			<button type="primary" @click="save">保存</button>
+		</view>
 	</view>
 </template>
 
 <script>
+	import { trimArray } from '../../utils/utils.js'
+	
 	export default {
 		props: ['id'],
 		data() {
 			return {
 				item: {
 					'name': '',
-					'logo': null
-				}
+					'other_name': [],
+					'logo': null,
+					'region_id': '',
+					'region_name': '',
+					'founded_year': '',
+					'series': [],
+					'breif': ''
+				},
+				tempFile: null
+				
 			}
 		},
 		methods: {
-			save () {
+			async save () {
+				
+				uni.showLoading()
+				
+				let id = this.id
 				const db = uniCloud.database()
-				if (!this.id) {
-					db.collection('brand').add(this.item).then(e => {
-						console.log(e)
+				
+				try {
+					if (!id) {
+						let create = await db.collection('brand').add({
+							name: this.item.name
+						})
+						
+						id = create.result.id
+					}
+					
+					if (this.tempFile) {
+						let upload = await uniCloud.uploadFile({
+							filePath: this.tempFile.path,
+							cloudPath: `brand/${id}.${this.tempFile.extname}`
+						})
+						
+						this.item.logo = upload.fileID
+					}
+					
+					this.item.other_name = trimArray(this.item.other_name)
+					this.item.series = trimArray(this.item.series)
+					
+					let update = await db.collection('brand').doc(id).update(this.item)
+					
+					uni.hideLoading()
+					uni.showModal({
+						title: '返回',
+						content: JSON.stringify(update)
+					})
+				} catch (e) {
+					uni.hideLoading()
+					uni.showModal({
+						title: '报错',
+						content: e.message
 					})
 				}
+				
+				
 			},
 			imageSelect (e) {
-				console.log('imageSelect')
-				console.log(e)
+				this.tempFile = e.tempFiles[0]
 			},
-			imageProgress (e) {
-				console.log('imageProgress')
-				console.log(e)
+			removeOtherName (index) {
+				this.item.other_name.splice(index, 1)
 			},
-			imageSuccess (e) {
-				console.log('imageSuccess')
-				console.log(e)
+			addOtherName () {
+				this.item.other_name.push('')
 			},
-			imageFail (e) {
-				console.log('imageFail')
-				console.log(e)
+			removeSeries (index) {
+				this.item.series.splice(index, 1)
+			},
+			addSeries () {
+				this.item.series.push('')
 			}
 		}
 	}
 </script>
 
-<style>
-
+<style scoped lang="scss">
+	.array-item {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		margin-bottom: 12rpx;
+	}
+	
+	.array-item .del-icon {
+		margin-left: 20rpx;
+	}
+	
+	.array-item-action {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-end;
+	}
+	
+	.array-item-action .add {
+		color: $ipieces-text-grey;
+		font-size: 24rpx;
+		padding: 4rpx 8rpx;
+		border: 2rpx solid $ipieces-text-grey;
+		border-radius: 8rpx;
+	}
+	
+	.action {
+		padding: 40rpx 0;
+	}
 </style>
