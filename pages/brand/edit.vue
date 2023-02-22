@@ -26,7 +26,7 @@
 		<uni-section type="line" title="LOGO">
 			<uni-file-picker
 				ref="imagefile"
-				:value="item.logo_image" 
+				:value="logo_image" 
 				fileMediatype="image" 
 				mode="grid" 
 				:limit="1"
@@ -86,11 +86,11 @@
 		data() {
 			return {
 				'_id': null,
+				'logo_image': null,
 				item: {
 					'name': '',
 					'other_name': [],
 					'logo': '',
-					'logo_image': null,
 					'region_id': '',
 					'region_name': '',
 					'founded_year': '',
@@ -139,7 +139,7 @@
 					let obj = await uniCloud.getTempFileURL({
 						fileList: [this.item.logo]
 					})
-					this.item.logo_image = obj.fileList.map(item => {
+					this.logo_image = obj.fileList.map(item => {
 						return {
 							'name': item.fileid,
 							'extname': 'mime_type',
@@ -164,7 +164,7 @@
 					if (this.tempFile) {
 						let upload = await uniCloud.uploadFile({
 							filePath: this.tempFile.path,
-							cloudPath: `brand/${id}.${this.tempFile.extname}`
+							cloudPath: `brand/${this._id}.${this.tempFile.extname}`
 						})
 						
 						this.item.logo = upload.fileID
@@ -184,7 +184,7 @@
 					uni.hideLoading()
 					uni.showModal({
 						title: '报错',
-						content: e.message
+						content: JSON.stringify(e)
 					})
 				}
 				

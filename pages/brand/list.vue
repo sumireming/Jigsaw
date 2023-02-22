@@ -7,6 +7,12 @@
 				link
 				:to="`/pages/brand/edit?id=${item._id}`"></uni-list-item>
 		</uni-list>
+		<uni-fab horizontal="right"
+			vertical="bottom"
+			:pattern="{
+				buttonColor: '#000000'
+			}"
+			@fabClick="gotoAdd"></uni-fab>
 	</view>
 </template>
 
@@ -21,6 +27,11 @@
 			this.getList()
 		},
 		methods: {
+			gotoAdd () {
+				uni.navigateTo({
+					url: '/pages/brand/edit'
+				})
+			},
 			async getList() {
 				const db = uniCloud.database()
 				let obj = await db.collection('brand').get()
