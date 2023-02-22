@@ -5,7 +5,7 @@
 				:title="item.name" 
 				clickable 
 				link
-				:to="`/pages/brand/edit?id=${item._id}`"></uni-list-item>
+				:to="`/pages/brand/detail?id=${item._id}`"></uni-list-item>
 		</uni-list>
 		<uni-fab horizontal="right"
 			vertical="bottom"
@@ -34,16 +34,24 @@
 			},
 			async getList() {
 				const db = uniCloud.database()
-				let obj = await db.collection('brand').get()
-				let result = obj.result
-				if (result.data) {
-					this.list = result.data
-				} else {
+				try {
+					let obj = await db.collection('brand').get()
+					let result = obj.result
+					if (result.errCode === 0) {
+						this.list = result.data
+					} else {
+						uni.showModal({
+							title: '提示',
+							content: result.errMsg
+						})
+					}
+				} catch (e) {
 					uni.showModal({
-						title: '报错',
-						content: result.message
+						title: '提示',
+						content: JSON.stringify(e)
 					})
 				}
+				
 			}
 		}
 	}

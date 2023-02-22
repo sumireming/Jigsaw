@@ -56,7 +56,10 @@
             "postcss" : true,
             "minified" : true
         },
-        "usingComponents" : true
+        "usingComponents" : true,
+        "secureNetwork" : {
+            "enable" : true
+        }
     },
     "mp-alipay" : {
         "usingComponents" : true

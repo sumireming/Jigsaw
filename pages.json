@@ -12,7 +12,15 @@
             "path" : "pages/brand/edit",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "品牌添加/编辑",
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        } ,{
+            "path" : "pages/brand/detail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
             

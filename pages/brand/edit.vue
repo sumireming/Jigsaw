@@ -32,9 +32,7 @@
 				:limit="1"
 				:auto-upload="false"
 				@select="imageSelect" 
-				@progress="imageProgress" 
-				@success="imageSuccess" 
-				@fail="imageFail" 
+				@delete="imageDelete"
 			></uni-file-picker>
 		</uni-section>
 		<uni-section type="line" title="国家/区域">
@@ -106,6 +104,16 @@
 			this._id = option.id
 			if (this.id) {
 				this._id = this.id
+				
+			} 
+			if (this._id) {
+				uni.setNavigationBarTitle({
+					title: '编辑品牌'
+				})
+			} else {
+				uni.setNavigationBarTitle({
+					title: '添加品牌'
+				})
 			}
 		},
 		async mounted() {
@@ -153,13 +161,6 @@
 			async save () {
 				uni.showLoading()
 				try {
-					if (!this._id) {
-						let create = await db.collection('brand').add({
-							name: this.item.name
-						})
-						
-						this._id = create.result.id
-					}
 					
 					if (this.tempFile) {
 						let upload = await uniCloud.uploadFile({
@@ -167,31 +168,55 @@
 							cloudPath: `brand/${this._id}.${this.tempFile.extname}`
 						})
 						
+						if (this.item.logo) {
+							this.removeCloudFile(this.item.log)
+						}
+						
 						this.item.logo = upload.fileID
 					}
 					
 					this.item.other_name = trimArray(this.item.other_name)
 					this.item.series = trimArray(this.item.series)
 					
-					let update = await db.collection('brand').doc(this._id).update(this.item)
+					let obj 
+					if (!this._id) {
+						obj = await db.collection('brand').add(this.item)
+						this._id = create.result.id
+					} else {
+						delete this.item._id
+						obj = await db.collection('brand').doc(this._id).update(this.item)
+					}
+					
 					
 					uni.hideLoading()
 					uni.showModal({
-						title: '返回',
-						content: JSON.stringify(update)
+						title: '成功',
+						content: JSON.stringify(obj)
 					})
 				} catch (e) {
 					uni.hideLoading()
 					uni.showModal({
-						title: '报错',
+						title: '提示',
 						content: JSON.stringify(e)
 					})
 				}
-				
-				
+			},
+			removeCloudFile (fileid) {
+				uniCloud.deleteFile({
+					fileList: [fileid]
+				})
 			},
 			imageSelect (e) {
 				this.tempFile = e.tempFiles[0]
+			},
+			imageDelete () {
+				if (this.tempFile) {
+					this.tempFile = null
+				} 
+				
+				if (this.item.logo) {
+					this.item.logo = ''
+				}
 			},
 			removeOtherName (index) {
 				this.item.other_name.splice(index, 1)
