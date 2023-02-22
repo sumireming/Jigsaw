@@ -1,10 +1,18 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 	    {
-            "path" : "pages/puzzle/edit",
+	        "path" : "pages/brand/list",
+	        "style" :                                                                                    
+	        {
+	            "navigationBarTitleText": "品牌列表",
+	            "enablePullDownRefresh": false
+	        }
+	        
+	    }, {
+            "path" : "pages/brand/edit",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "品牌添加/编辑",
                 "enablePullDownRefresh": false
             }
             
@@ -13,8 +21,8 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
+		"navigationBarBackgroundColor": "#ffffff",
+		"backgroundColor": "#ffffff"
 	},
 	"uniIdRouter": {}
 }

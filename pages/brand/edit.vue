@@ -1,5 +1,5 @@
 <template>
-	<view class="page-wrap">
+	<view v-if="!loading" class="page-wrap">
 		<uni-section type="line"
 			title="品牌名"
 			sub-title="请尽量填写最通俗最常见的品牌叫法">
@@ -26,7 +26,7 @@
 		<uni-section type="line" title="LOGO">
 			<uni-file-picker
 				ref="imagefile"
-				v-model="item.logo" 
+				:value="item.logo_image" 
 				fileMediatype="image" 
 				mode="grid" 
 				:limit="1"
@@ -79,40 +79,86 @@
 
 <script>
 	import { trimArray } from '../../utils/utils.js'
+	const db = uniCloud.database()
 	
 	export default {
 		props: ['id'],
 		data() {
 			return {
+				'_id': null,
 				item: {
 					'name': '',
 					'other_name': [],
-					'logo': null,
+					'logo': '',
+					'logo_image': null,
 					'region_id': '',
 					'region_name': '',
 					'founded_year': '',
 					'series': [],
 					'breif': ''
 				},
-				tempFile: null
+				tempFile: null,
+				loading: true
 				
 			}
 		},
+		onLoad(option) {
+			this._id = option.id
+			if (this.id) {
+				this._id = this.id
+			}
+		},
+		async mounted() {
+			if (this._id) {
+				await this.getInfo()
+			}
+			this.loading = false
+		},
 		methods: {
+			getInfo() {
+				return new Promise(async (resolve, reject) => {
+					let obj = await db.collection('brand').doc(this._id).get()
+					let result = obj.result
+					if (result.errCode === 0 && result.data && result.data[0]) {
+						this.item = result.data[0]
+						if (this.item.logo) {
+							await this.getLogoImage()
+						}
+					} else {
+						uni.showModal({
+							title: '提示',
+							content: result.errMsg
+						})
+					}
+					resolve()
+				})
+				
+			},
+			async getLogoImage () {
+				return new Promise(async (resolve, reject) => {
+					let obj = await uniCloud.getTempFileURL({
+						fileList: [this.item.logo]
+					})
+					this.item.logo_image = obj.fileList.map(item => {
+						return {
+							'name': item.fileid,
+							'extname': 'mime_type',
+							'url': item.tempFileURL
+						}
+					})
+					resolve()
+				})
+				
+			},
 			async save () {
-				
 				uni.showLoading()
-				
-				let id = this.id
-				const db = uniCloud.database()
-				
 				try {
-					if (!id) {
+					if (!this._id) {
 						let create = await db.collection('brand').add({
 							name: this.item.name
 						})
 						
-						id = create.result.id
+						this._id = create.result.id
 					}
 					
 					if (this.tempFile) {
@@ -127,7 +173,7 @@
 					this.item.other_name = trimArray(this.item.other_name)
 					this.item.series = trimArray(this.item.series)
 					
-					let update = await db.collection('brand').doc(id).update(this.item)
+					let update = await db.collection('brand').doc(this._id).update(this.item)
 					
 					uni.hideLoading()
 					uni.showModal({
