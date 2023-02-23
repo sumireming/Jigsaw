@@ -13,7 +13,16 @@
 </script>
 
 <style lang="scss">
-	* { margin: 0; padding: 0; font-family: Arial, Helvetica, sans-serif;}
+	/*每个页面公共css */
+	* { 
+		margin: 0; 
+		padding: 0; 
+		font-family: Arial, Helvetica, sans-serif;
+	}
+	
+	view {
+		font-size: 24rpx;
+	}
 	
 	button {
 		box-sizing: border-box;
@@ -38,9 +47,38 @@
 		opacity: 0.9;
 	}
 	
-	/*每个页面公共css */
-	.page-wrap {
-		margin: 0 30rpx;
+	.link {
+		display: inline-block;
+		text-decoration: underline;
+		color: $ipieces-primary-color;
+		font-weight: 400;
 	}
 	
+	.weak-link {
+		display: inline-block;
+		font-size: 20rpx;
+		line-height: 20rpx;
+		padding: 20rpx 0;
+		color: $ipieces-text-light-grey;
+	}
+	
+	.page-wrap {
+		margin: 0 30rpx;
+		padding-bottom: 100rpx;
+	}
+	
+	.section {
+		padding: 30rpx 0;
+		border-bottom: 2rpx solid $ipieces-border-color;
+		font-size: 22rpx;
+		line-height: 32rpx;
+	}
+	
+	.section .title {
+		font-size: 28rpx;
+		line-height: 36rpx;
+		color: $ipieces-text-color;
+		font-weight: 600;
+		margin-bottom: 20rpx;
+	}
 </style>

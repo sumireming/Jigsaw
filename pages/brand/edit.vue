@@ -162,10 +162,17 @@
 				uni.showLoading()
 				try {
 					
+					if (!this.item.name) {
+						uni.showToast({
+							title: '请填写品牌名'
+						})
+						return
+					}
+					
 					if (this.tempFile) {
 						let upload = await uniCloud.uploadFile({
 							filePath: this.tempFile.path,
-							cloudPath: `brand/${this._id}.${this.tempFile.extname}`
+							cloudPath: `brand/${this.item.name}.${this.tempFile.extname}`
 						})
 						
 						if (this.item.logo) {
@@ -191,7 +198,10 @@
 					uni.hideLoading()
 					uni.showModal({
 						title: '成功',
-						content: JSON.stringify(obj)
+						content: JSON.stringify(obj),
+						success() {
+							uni.navigateBack()
+						}
 					})
 				} catch (e) {
 					uni.hideLoading()

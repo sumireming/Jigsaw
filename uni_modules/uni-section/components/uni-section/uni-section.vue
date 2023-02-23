@@ -53,11 +53,11 @@
 			},
       titleFontSize: {
         type: String,
-        default: '14px'
+        default: '28rpx'
       },
 			titleColor:{
 				type: String,
-				default: '#333'
+				default: '#000000'
 			},
 			subTitle: {
 				type: String,
@@ -69,7 +69,7 @@
       },
       subTitleColor: {
         type: String,
-        default: '#999'
+        default: 'rgba(0, 0, 0, .5)'
       },
 			padding: {
 				type: [Boolean, String],

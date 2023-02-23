@@ -20,7 +20,7 @@
             "path" : "pages/brand/detail",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "",
+                "navigationBarTitleText": "拼图品牌",
                 "enablePullDownRefresh": false
             }
             
