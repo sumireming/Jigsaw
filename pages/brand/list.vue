@@ -58,8 +58,6 @@
 				try {
 					let res = await db.collection('region').get()
 					this.regionList = handleDBResult(res)
-					console.log(this.regionList)
-					
 				} catch (e) {
 					uni.showModal({
 						title: '报错',

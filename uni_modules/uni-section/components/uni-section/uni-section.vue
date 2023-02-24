@@ -146,7 +146,7 @@
         flex-direction: column;
         flex: 1;
         color: rgba(0, 0, 0, .8);
-		
+		font-weight: 400;
         .distraction {
           flex-direction: row;
           align-items: center;

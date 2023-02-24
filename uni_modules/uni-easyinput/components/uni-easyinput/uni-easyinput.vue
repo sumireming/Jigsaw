@@ -531,8 +531,8 @@ $uni-border-1: #dcdfe6 !default;
 	overflow: hidden;
 	flex: 1;
 	line-height: 1;
-	font-size: 14px;
-	height: 35px;
+	font-size: 28rpx;
+	height: 36rpx;
 	// min-height: 36px;
 }
 
@@ -555,9 +555,9 @@ $uni-border-1: #dcdfe6 !default;
 	overflow: hidden;
 	flex: 1;
 	line-height: 1.5;
-	font-size: 14px;
+	font-size: 28rpx;
 	margin: 6px;
-	margin-left: 0;
+	// margin-left: 0;
 	height: 80px;
 	min-height: 80px;
 	/* #ifndef APP-NVUE */

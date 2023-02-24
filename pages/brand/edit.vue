@@ -1,5 +1,5 @@
 <template>
-	<view v-if="!loading" class="page-wrap">
+	<view  class="page-wrap">
 		<uni-section type="line"
 			title="品牌名"
 			sub-title="请尽量填写最通俗最常见的品牌叫法">
@@ -38,6 +38,15 @@
 		<uni-section type="line" title="国家/区域">
 			<uni-easyinput v-model="item.region_name"
 				:inputBorder="false"></uni-easyinput>
+			<view class="tag-wrap">
+				<view class="tag" 
+					v-for="region in regionList"
+					:class="{'selected': region._id === item.region_id}"
+					@click="() => {
+						item.region_id = region._id
+						item.region_name = region.name
+					}">{{region.name}}</view>
+			</view>
 		</uni-section>
 		<uni-section type="line" title="成立年">
 			<uni-easyinput v-model="item.founded_year"
@@ -76,7 +85,7 @@
 </template>
 
 <script>
-	import { trimArray } from '../../utils/utils.js'
+	import { trimArray, handleDBResult } from '../../utils/utils.js'
 	const db = uniCloud.database()
 	
 	export default {
@@ -96,7 +105,7 @@
 					'breif': ''
 				},
 				tempFile: null,
-				loading: true
+				regionList: null
 				
 			}
 		},
@@ -104,7 +113,6 @@
 			this._id = option.id
 			if (this.id) {
 				this._id = this.id
-				
 			} 
 			if (this._id) {
 				uni.setNavigationBarTitle({
@@ -118,43 +126,49 @@
 		},
 		async mounted() {
 			if (this._id) {
-				await this.getInfo()
+				this.getInfo()
 			}
-			this.loading = false
+			this.getRegion()
 		},
 		methods: {
-			getInfo() {
-				return new Promise(async (resolve, reject) => {
-					let obj = await db.collection('brand').doc(this._id).get()
-					let result = obj.result
-					if (result.errCode === 0 && result.data && result.data[0]) {
-						this.item = result.data[0]
-						if (this.item.logo) {
-							await this.getLogoImage()
-						}
-					} else {
-						uni.showModal({
-							title: '提示',
-							content: result.errMsg
-						})
+			async getRegion () {
+				try {
+					let res = await db.collection('region').get()
+					this.regionList = handleDBResult(res)
+					console.log(this.regionList)
+				} catch (e) {
+					uni.showModal({
+						title: '报错',
+						content: JSON.stringify(e)
+					})
+				}
+			},
+			async getInfo () {
+				try {
+					let res = await db.collection('brand').doc(this._id).get()
+					this.item = handleDBResult(res)[0]
+					console.log(this.item)
+					if (this.item.logo) {
+						await this.getLogoImage()
 					}
-					resolve()
-				})
-				
+				} catch (e) {
+					uni.showModal({
+						title: '报错',
+						content: JSON.stringify(e)
+					})
+				}
 			},
 			async getLogoImage () {
-				return new Promise(async (resolve, reject) => {
-					let obj = await uniCloud.getTempFileURL({
-						fileList: [this.item.logo]
-					})
-					this.logo_image = obj.fileList.map(item => {
-						return {
-							'name': item.fileid,
-							'extname': 'mime_type',
-							'url': item.tempFileURL
-						}
-					})
-					resolve()
+				let obj = await uniCloud.getTempFileURL({
+					fileList: [this.item.logo]
+				})
+				
+				this.logo_image = obj.fileList.map(item => {
+					return {
+						'name': item.fileid,
+						'extname': 'mime_type',
+						'url': item.tempFileURL
+					}
 				})
 				
 			},
@@ -176,7 +190,7 @@
 						})
 						
 						if (this.item.logo) {
-							this.removeCloudFile(this.item.log)
+							this.removeCloudFile(this.item.logo)
 						}
 						
 						this.item.logo = upload.fileID
@@ -185,29 +199,36 @@
 					this.item.other_name = trimArray(this.item.other_name)
 					this.item.series = trimArray(this.item.series)
 					
-					let obj 
 					if (!this._id) {
-						obj = await db.collection('brand').add(this.item)
-						this._id = create.result.id
+						let res = await db.collection('brand').add(this.item)
+						this._id = handleDBResult(res).id
+						
+						uni.showModal({
+							title: '新建成功',
+							content: JSON.stringify(res),
+							success() {
+								uni.navigateBack()
+							}
+						})
 					} else {
 						delete this.item._id
-						obj = await db.collection('brand').doc(this._id).update(this.item)
+						let res = await db.collection('brand').doc(this._id).update(this.item)
+						
+						uni.showModal({
+							title: '修改成功',
+							content: JSON.stringify(res),
+							success() {
+								uni.navigateBack()
+							}
+						})
 					}
-					
-					
 					uni.hideLoading()
-					uni.showModal({
-						title: '成功',
-						content: JSON.stringify(obj),
-						success() {
-							uni.navigateBack()
-						}
-					})
+					
 				} catch (e) {
 					uni.hideLoading()
 					uni.showModal({
-						title: '提示',
-						content: JSON.stringify(e)
+						title: '报错',
+						content: e.message
 					})
 				}
 			},
@@ -272,5 +293,9 @@
 	
 	.action {
 		padding: 40rpx 0;
+	}
+	
+	.tag-wrap {
+		padding-top: 20rpx;
 	}
 </style>

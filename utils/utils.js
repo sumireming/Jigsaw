@@ -6,7 +6,7 @@ const handleDBResult = (res) => {
 	if (res.errCode === 0) {
 		let result = res.result
 		if (result.errCode === 0) {
-			return result.data
+			return result.inserted === 1 ? result.id : result.data
 		} else {
 			uni.showModal({
 				title: '结果层错误',
