@@ -15,7 +15,7 @@
 			}
 		},
 		mounted() {
-			this.getBrand()
+			// this.getBrand()
 		},
 		methods: {
 			async getBrand () {

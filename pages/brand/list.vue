@@ -26,6 +26,12 @@
 		onShow() {
 			this.getList()
 		},
+		async mounted() {
+			const brand = uniCloud.importObject('brand')
+			await brand.setRegionToDB()
+			
+			
+		},
 		methods: {
 			gotoAdd () {
 				uni.navigateTo({
