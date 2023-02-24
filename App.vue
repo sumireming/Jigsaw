@@ -54,6 +54,25 @@
 		font-weight: 400;
 	}
 	
+	.tag {
+		display: inline-block;
+		box-sizing: border-box;
+		font-size: 28rpx;
+		line-height: 44rpx;
+		padding: 0 20rpx;
+		margin-right: 16rpx;
+		margin-bottom: 20rpx;
+		color: $ipieces-text-light-grey;
+		background-color: $ipieces-grey-bg-color;
+		border-radius: 8rpx;
+	}
+	
+	.tag.selected {
+		background-color: $ipieces-second-color;
+		border: 2rpx solid $ipieces-primary-color;
+		color: $ipieces-primary-color;
+	}
+	
 	.weak-link {
 		display: inline-block;
 		font-size: 20rpx;

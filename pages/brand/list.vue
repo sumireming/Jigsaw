@@ -1,5 +1,14 @@
 <template>
 	<view class="page-wrap">
+		<view class="header" v-if="regionList">
+			<view class="tag"
+				:class="{'selected': !currentRegion}"
+				@click="currentRegion=null">全部</view>
+			<view class="tag"
+				v-for="region in regionList"
+				:class="{'selected': currentRegion === region._id}"
+				@click="currentRegion=region._id">{{region.name}}</view>
+		</view>
 		<uni-list>
 			<uni-list-item v-for="item in list" 
 				:title="item.name" 
@@ -17,20 +26,26 @@
 </template>
 
 <script>
+	import { handleDBResult } from '../../utils/utils.js'
+	
 	export default {
 		data() {
 			return {
-				list: []
+				list: [],
+				regionList: null,
+				currentRegion: null
 			}
 		},
 		onShow() {
 			this.getList()
 		},
 		async mounted() {
-			const brand = uniCloud.importObject('brand')
-			await brand.setRegionToDB()
-			
-			
+			this.getRegion()
+		},
+		watch: {
+			currentRegion () {
+				this.getList()
+			}
 		},
 		methods: {
 			gotoAdd () {
@@ -38,10 +53,25 @@
 					url: '/pages/brand/edit'
 				})
 			},
+			async getRegion () {
+				const db = uniCloud.database()
+				try {
+					let res = await db.collection('region').get()
+					this.regionList = handleDBResult(res)
+					console.log(this.regionList)
+					
+				} catch (e) {
+					uni.showModal({
+						title: '报错',
+						content: JSON.stringify(e)
+					})
+				}
+			},
 			async getList() {
 				const db = uniCloud.database()
 				try {
-					let obj = await db.collection('brand').get()
+					let condition = this.currentRegion ? {'region_id': this.currentRegion} : {}
+					let obj = await db.collection('brand').where(condition).field('_id, name').get()
 					let result = obj.result
 					if (result.errCode === 0) {
 						this.list = result.data
@@ -63,6 +93,8 @@
 	}
 </script>
 
-<style>
-
+<style scoped>
+	.header {
+		padding: 40rpx 0 20rpx;
+	}
 </style>
