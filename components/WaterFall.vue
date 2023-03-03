@@ -2,12 +2,12 @@
 	<view class="list">
 		<view class="left" >
 			<view>
-				<PartyCard v-for="item in leftItems" :data="item"></PartyCard>
+				<WaterFallItem v-for="item in leftItems" :info="item"></WaterFallItem>
 			</view>
 		</view>
 		<view class="right" >
 			<view>
-				<PartyCard v-for="item in rightItems" :data="item"></PartyCard>
+				<WaterFallItem v-for="item in rightItems" :info="item"></WaterFallItem>
 			</view>
 		</view>
 	</view>
@@ -37,6 +37,7 @@
 		mounted() {
 			if (this.list) {
 				this.calc()
+				console.log(this.leftItems)
 			}
 		},
 		methods: {
@@ -49,15 +50,17 @@
 			calc () {
 				for (let i = 0; i<this.list.length; i++) {
 					let item = this.list[i]
+					let width = item.cover_info.width
+					let height = item.cover_info.height
 					if (!this.leftHeight && !this.rightHeight) {
 						this.leftItems.push(item)
-						this.leftHeight += item.itemHeight
+						this.leftHeight += height
 					} else if (this.leftHeight < this.rightHeight) {
 						this.leftItems.push(item)
-						this.leftHeight += item.itemHeight
+						this.leftHeight += height
 					} else {
 						this.rightItems.push(item)
-						this.rightHeight += item.itemHeight
+						this.rightHeight += height
 					}
 				}
 			}
@@ -71,13 +74,14 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
+		overflow: hidden;
 	}
 	
-	// .left {
-	// 	margin: 0 10rpx;
-	// }
+	.left {
+		margin: 0 10rpx;
+	}
 	
-	// .right {
-	// 	margin: 0 10rpx;
-	// }
+	.right {
+		margin: 0 10rpx;
+	}
 </style>

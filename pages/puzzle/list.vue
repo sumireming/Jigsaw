@@ -1,34 +1,33 @@
 <template>
 	<view class="page-wrap">
-		<button @click="invoke">gogogo</button>
+		<WaterFall v-if="list" :list="list"></WaterFall>
 	</view>
 </template>
 
 <script>
 	
+	import WaterFall from '../../components/WaterFall.vue'
 	import { handleDBResult } from '../../utils/utils.js'
 	
 	const db = uniCloud.database()
 	const puzzle = uniCloud.importObject('puzzle')
 	
 	export default {
+		components: { WaterFall },
 		data() {
 			return {
-				list: []
+				list: null
 			}
 		},
 		async mounted() {
-			// this.getList()
-			
+			this.getList()
 		},
 		methods: {
 			async invoke () {
 				
 			},
 			async getList () {
-				let res = await puzzle.getPuzzleList()
-				console.log(res)
-				
+				this.list = await puzzle.getPuzzleList()
 			},
 		}
 	}

@@ -83,7 +83,7 @@
 	}
 	
 	.page-wrap {
-		margin: 0 30rpx;
+		margin: 0 20rpx;
 		padding-bottom: 100rpx;
 	}
 	
