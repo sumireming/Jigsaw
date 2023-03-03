@@ -65,11 +65,12 @@
 		color: $ipieces-text-light-grey;
 		background-color: $ipieces-grey-bg-color;
 		border-radius: 8rpx;
+		border: 2rpx solid $ipieces-grey-bg-color;
 	}
 	
 	.tag.selected {
 		background-color: $ipieces-second-color;
-		border: 2rpx solid $ipieces-primary-color;
+		border-color: $ipieces-primary-color;
 		color: $ipieces-primary-color;
 	}
 	

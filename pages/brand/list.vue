@@ -54,10 +54,10 @@
 				})
 			},
 			async getRegion () {
-				const db = uniCloud.database()
+				const puzzle = uniCloud.importObject('puzzle')
 				try {
-					let res = await db.collection('region').get()
-					this.regionList = handleDBResult(res)
+					let res = await puzzle.getRegionList()
+					this.regionList = res.data
 				} catch (e) {
 					uni.showModal({
 						title: '报错',

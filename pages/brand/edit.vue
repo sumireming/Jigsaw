@@ -37,11 +37,12 @@
 		</uni-section>
 		<uni-section type="line" title="国家/区域">
 			<uni-easyinput v-model="item.region_name"
+				@change="onRegionChange"
 				:inputBorder="false"></uni-easyinput>
 			<view class="tag-wrap">
 				<view class="tag" 
 					v-for="region in regionList"
-					:class="{'selected': region._id === item.region_id}"
+					:class="{'selected': region.name === item.region_name}"
 					@click="() => {
 						item.region_id = region._id
 						item.region_name = region.name
@@ -132,10 +133,10 @@
 		},
 		methods: {
 			async getRegion () {
+				const puzzle = uniCloud.importObject('puzzle')
 				try {
-					let res = await db.collection('region').get()
-					this.regionList = handleDBResult(res)
-					console.log(this.regionList)
+					let res = await puzzle.getRegionList()
+					this.regionList = res.data
 				} catch (e) {
 					uni.showModal({
 						title: '报错',
@@ -147,7 +148,6 @@
 				try {
 					let res = await db.collection('brand').doc(this._id).get()
 					this.item = handleDBResult(res)[0]
-					console.log(this.item)
 					if (this.item.logo) {
 						await this.getLogoImage()
 					}
@@ -176,6 +176,7 @@
 				uni.showLoading()
 				try {
 					
+					// 品牌名必填
 					if (!this.item.name) {
 						uni.showToast({
 							title: '请填写品牌名'
@@ -183,6 +184,7 @@
 						return
 					}
 					
+					// 上传图片
 					if (this.tempFile) {
 						let upload = await uniCloud.uploadFile({
 							filePath: this.tempFile.path,
@@ -196,8 +198,17 @@
 						this.item.logo = upload.fileID
 					}
 					
+					// 处理数组
 					this.item.other_name = trimArray(this.item.other_name)
 					this.item.series = trimArray(this.item.series)
+					
+					// 处理Region
+					if (this.item.region_name && !this.item.region_id) {
+						let res_region = await db.collection('region').add({
+							name: this.item.region_name
+						})
+						this.item.region_id = handleDBResult(res_region)._id
+					}
 					
 					if (!this._id) {
 						let res = await db.collection('brand').add(this.item)
@@ -236,6 +247,18 @@
 				uniCloud.deleteFile({
 					fileList: [fileid]
 				})
+			},
+			onRegionChange (val) {
+				if (val) {
+					let region = this.regionList.find(ritem => {
+						return val === ritem.name
+					})
+					if (region) {
+						this.item.region_id = region._id
+					}
+				} else {
+					this.item.region_id = ''
+				}
 			},
 			imageSelect (e) {
 				this.tempFile = e.tempFiles[0]
