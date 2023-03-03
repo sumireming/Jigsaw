@@ -42,7 +42,7 @@
 		line-height: 32rpx;
 		color: $ipieces-primary-color;
 		font-weight: 600;
-		word-break: break-all;
+		word-break: break-word;
 	}
 	
 	.subtitle {

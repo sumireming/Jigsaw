@@ -20,6 +20,12 @@
 		font-family: Arial, Helvetica, sans-serif;
 	}
 	
+	h1 {
+		font-size: 36rpx;
+		line-height: 44rpx;
+		font-weight: 600;
+	}
+	
 	view {
 		font-size: 24rpx;
 	}
@@ -87,11 +93,15 @@
 		padding-bottom: 100rpx;
 	}
 	
+	.detail-wrap {
+		margin: 0 30rpx;
+	}
+	
 	.section {
 		padding: 30rpx 0;
 		border-bottom: 2rpx solid $ipieces-border-color;
 		font-size: 22rpx;
-		line-height: 32rpx;
+		line-height: 44rpx;
 	}
 	
 	.section .title {
