@@ -1,34 +1,35 @@
 <template>
 	<view class="page-wrap">
-		<PuzzleCard v-for="item in list" :data="item"></PuzzleCard>
+		<button @click="invoke">gogogo</button>
 	</view>
 </template>
 
 <script>
 	
-	import PuzzleCard from '../../components/PuzzleCard.vue'
+	import { handleDBResult } from '../../utils/utils.js'
+	
+	const db = uniCloud.database()
+	const puzzle = uniCloud.importObject('puzzle')
 	
 	export default {
-		components: {PuzzleCard},
 		data() {
 			return {
 				list: []
 			}
 		},
-		mounted() {
-			this.getList()
+		async mounted() {
+			// this.getList()
+			
 		},
 		methods: {
-			async getList () {
-				const puzzle = uniCloud.importObject('puzzle')
-				let res = await puzzle.getPuzzleList()
-				this.list = res
+			async invoke () {
 				
-				// let list = res.data
-				// console.log(list)
-				// let files = await puzzle.getPuzzleTempImageUrl(list)
-				// console.log(files)
-			}
+			},
+			async getList () {
+				let res = await puzzle.getPuzzleList()
+				console.log(res)
+				
+			},
 		}
 	}
 </script>
