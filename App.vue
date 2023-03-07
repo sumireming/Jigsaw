@@ -43,6 +43,10 @@
 		margin: 0;
 	}
 	
+	button::after {
+		display: none;
+	}
+	
 	button[type=primary] {
 		background-color: $ipieces-primary-color;
 	}
