@@ -69,7 +69,7 @@
 				const db = uniCloud.database()
 				try {
 					let condition = this.currentRegion ? {'region_id': this.currentRegion} : {}
-					let obj = await db.collection('brand').where(condition).field('_id, name').get()
+					let obj = await db.collection('brand').where(condition).field('_id,name').get()
 					let result = obj.result
 					if (result.errCode === 0) {
 						this.list = result.data

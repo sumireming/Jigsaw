@@ -1,6 +1,11 @@
 <template>
 	<view class="page-wrap">
-		<view class="wrap">
+		<Login>
+			<template v-slot:register>
+				<button type="primary">呼起登录</button>
+			</template>
+		</Login>
+		<!-- <view class="wrap">
 			<button class="avatar-wrap" 
 				open-type="chooseAvatar" 
 				@chooseavatar="onChooseavatar">
@@ -17,83 +22,23 @@
 				<button type="primary" @click="login">一键登录</button>
 				
 			</view>
-		</view>
+		</view> -->
 		
 	</view>
 </template>
 
 <script>
-	import requestCloud from '../../utils/requestCloud.js'
+	import Login from '../../components/Login.vue'
 	
 	export default {
+		components: { Login },
 		data() {
 			return {
-				avatar: null,
-				nickname: null
 			}
 		},
 		methods: {
-			async onChooseavatar (e) {
-				this.avatar = e.detail.avatarUrl
-			},
-			
-			async login () {
-				// if (!this.avatar || !this.nickname) {
-				// 	uni.showToast({
-				// 		icon: 'none',
-				// 		title: '请选择头像和昵称'
-				// 	})
-				// 	return
-				// }
-				let loginInfo = await this.wxLogin()
-				if (loginInfo.code) {
-					let code = loginInfo.code
-					let avatar = await this.uploadAvatar()
-					let token = await requestCloud({
-						method: 'user.login',
-						data: {
-							code,
-							avatar,
-							nickname: this.nickname
-						}
-					})
-					console.log(token)
-					if (token) {
-						uni.setStorageSync('token', token)
-					}
-					
-				} else {
-					console.error(loginInfo.errMsg)
-				}
-			},
-			uploadAvatar () {
-				return new Promise((resolve, reject) => {
-					if (this.avatar) {
-						uni.downloadFile({
-							url: this.avatar,
-							success: async (r) => {
-								let filePath = r.tempFilePath
-								let arr = filePath.split('/')
-								let cloudPath = arr[arr.length - 1]
-								let upload = await uniCloud.uploadFile({
-									filePath,
-									cloudPath: `user/${cloudPath}`
-								})
-								resolve(upload.fileID)
-							}
-						})
-					}
-				})
+			login () {
 				
-			},
-			wxLogin () {
-				return new Promise(r => {
-					uni.login({
-						complete: (res) => {
-							r(res)
-						}
-					})
-				})
 			}
 		}
 	}

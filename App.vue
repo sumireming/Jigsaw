@@ -115,4 +115,8 @@
 		font-weight: 600;
 		margin-bottom: 20rpx;
 	}
+	
+	.placeholder {
+		color: $ipieces-placeholder;
+	}
 </style>

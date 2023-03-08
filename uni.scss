@@ -15,16 +15,17 @@
 /* 颜色变量 */
 $ipieces-primary-color: #000000;
 $ipieces-second-color: #ffffff;
+$ipieces-white-color: #ffffff;
 $ipieces-red-color: #ff5757;
 
 $ipieces-text-color: rgba(0, 0, 0, .8);
 $ipieces-text-grey: rgba(0, 0, 0, .5);
 $ipieces-text-light-grey: rgba(0, 0, 0, .3);
 
-$ipieces-grey-bg-color: rgba(0, 0, 0, .06);
-
-$ipieces-border-color: rgba(0, 0, 0, .04);
+$ipieces-grey-bg-color: #f5f5f5;
+$ipieces-border-color: #e5e5e5;
 $ipieces-border-radius: 16rpx;
+$ipieces-placeholder: #cccccc;
 
 
 /* 行为相关颜色 */
