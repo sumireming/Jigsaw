@@ -4,13 +4,15 @@
 			<!-- 登录状态显示的内容 -->
 			<slot></slot>
 		</template>
-		<template>
+		<template v-else>
 			<view class="login-button" @click="open">
 				<!-- 未登录状态显示的内容 -->
 				<slot name="register" ></slot>
 			</view>
 		</template>
-		<uni-popup ref="loginPopup" type="bottom">
+		<uni-popup ref="loginPopup" 
+			type="bottom"
+			mask-background-color="rgba(0, 0, 0, 0.4)">
 			<view class="wrap">
 				<view class="title">请选择头像和昵称</view>
 				<button class="avatar-wrap"
@@ -68,7 +70,6 @@
 				if (!this.isLogin) {
 					let loginInfo = await this.wxLogin()
 					if (loginInfo.code) {
-						console.log(loginInfo.code)
 						let res = await requestCloud({
 							method: 'user.slientLogin',
 							data: {
@@ -90,6 +91,9 @@
 			},
 			open () {
 				this.$refs.loginPopup.open()
+			},
+			close () {
+				this.$refs.loginPopup.close()
 			},
 			async onChooseavatar (e) {
 				this.avatar = e.detail.avatarUrl
@@ -117,6 +121,7 @@
 					})
 					
 					if (res.token) {
+						this.close()
 						uni.setStorageSync('token', res.token)
 						this.isLogin = true
 						uni.$emit('loginSuccess')

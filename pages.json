@@ -62,6 +62,26 @@
             
         }
     ],
+	"tabBar": {
+	  "color": "#797979",
+	  "selectedColor": "#000000",
+	  "backgroundColor": "#FFFFFF",
+	  "borderStyle": "white",
+	  "list": [
+	    {
+	      "pagePath": "pages/puzzle/list",
+		  "iconPath": "static/tabbar/discovery.png",
+		  "selectedIconPath": "static/tabbar/discovery-selected.png",
+	      "text": "发现"
+	    },
+	    {
+	      "pagePath": "pages/user/index",
+		  "iconPath": "static/tabbar/profile.png",
+		  "selectedIconPath": "static/tabbar/profile-selected.png",
+	      "text": "我的"
+	    }
+	  ]
+	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",

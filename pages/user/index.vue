@@ -1,6 +1,7 @@
 <template>
 	<view class="page-wrap">
 		<Login>
+			<template>123</template>
 			<template v-slot:register>
 				<button type="primary">呼起登录</button>
 			</template>
