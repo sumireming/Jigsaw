@@ -28,6 +28,7 @@
 			},
 			async getList () {
 				this.list = await puzzle.getPuzzleList()
+				console.log(JSON.stringify(this.list))
 			},
 		}
 	}

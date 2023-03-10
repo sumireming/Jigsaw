@@ -25,10 +25,7 @@
 </template>
 
 <script>
-	import { handleDBResult } from '../../utils/utils.js'
-	
-	const db = uniCloud.database()
-	const puzzle = uniCloud.importObject('puzzle')
+	import requestCloud from '../../utils/requestCloud.js'
 	
 	export default {
 		props: ['id'],
@@ -46,7 +43,13 @@
 		},
 		methods: {
 			async getInfo () {
-				this.info = await puzzle.getPuzzleInfo(this._id)
+				let res = await requestCloud({
+					method: 'puzzle.getPuzzleInfo',
+					data: {id: this._id}
+				})
+				if (res.data) {
+					this.info = res.data
+				}
 			}
 		}
 	}
