@@ -120,6 +120,8 @@
 						}
 					})
 					
+					console.log(res)
+					
 					if (res.token) {
 						this.close()
 						uni.setStorageSync('token', res.token)
