@@ -10,15 +10,6 @@
 	        
 	    },
 		{
-	        "path" : "pages/puzzle/index",
-	        "style" :                                                                                    
-	        {
-	            "navigationBarTitleText": "",
-	            "enablePullDownRefresh": false
-	        }
-	        
-	    },
-		{
 	        "path" : "pages/brand/list",
 	        "style" :                                                                                    
 	        {
@@ -57,6 +48,15 @@
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "个人中心",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/puzzle/edit",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
                 "enablePullDownRefresh": false
             }
             

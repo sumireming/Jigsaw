@@ -15,6 +15,11 @@
 				</view>
 				<view v-if="info.pieces">片数： {{info.pieces}}</view>
 			</view>
+			<view class="section">
+				<navigator :url="`/pages/puzzle/edit?id=${info._id}`">
+					<view class="weak-link">更新拼图描述</view>
+				</navigator>
+			</view>
 		</view>
 	</view>
 </template>
