@@ -1,9 +1,9 @@
 <template>
 	<view v-if="isInit" class="page-wrap">
 		<uni-section type="line"
-			title="图样/封面"
+			title="封面"
 			sub-title="请上传拼图封面">
-			<UploadImage dataid="cover" :defaultValue="[]"></UploadImage>
+			<ImageInput dataid="cover" :defaultValue="coverImage" @change="coverChange"></ImageInput>
 		</uni-section>
 		<uni-section type="line"
 			title="拼图图名"
@@ -54,15 +54,17 @@
 
 <script>
 	
-	import UploadImage from '../../components/UploadImage.vue'
+	import ImageInput from '../../components/ImageInput.vue'
 	import requestCloud from '../../utils/requestCloud.js'
+	import { uploadImage, getObjectDiff } from '../../utils/utils.js'
 	
 	export default {
 		props: ['id'],
-		components: {UploadImage},
+		components: {ImageInput},
 		data() {
 			return {
 				_id: null,
+				originItem: {},
 				item: {
 					name: '',
 					other_name: [],
@@ -73,10 +75,10 @@
 					pieces: 0,
 					cover: '',
 					cover_url: '',
-					cover_info: null
+					cover_info: {}
 				},
 				tempFile: null,
-				coverImage: null,
+				coverImage: [],
 				isInit: false
 			}
 		},
@@ -103,27 +105,119 @@
 				if (this._id) {
 					let res = await requestCloud({
 						method: 'puzzle.getPuzzleInfo',
-						data: {id: this.id}
+						data: {id: this._id}
 					})
-					this.item = Object.assign(this.item, res.data)
-					this.coverImage = [{
-						url: this.item.cover_url,
-						id: this.item.cover
-					}]
+					if (res.data) {
+						this.item = Object.assign(this.item, res.data)
+						this.originItem = JSON.parse(JSON.stringify(this.item))
+						if (this.item.cover_url) {
+							this.coverImage = [{
+								url: this.item.cover_url,
+								id: this.item.cover
+							}]
+						}
+					} else {
+						uni.showModal({
+							title: '提示',
+							content: '该条目不存在',
+							success: () => {
+								uni.navigateBack()
+							}
+						})
+					}
+					
 				} else {
 					this.coverImage = []
 				}
 				this.isInit = true
 			},
+			coverChange (value) {
+				this.coverImage = value
+			},
+			async handleCover () {
+				if (this.coverImage[0]) {
+					if (!this.coverImage[0].id && this.coverImage[0].url) {
+						let res = await uploadImage(this.coverImage[0].url, 'puzzle/')
+						if (res) {
+							this.item.cover = res.fileID
+							this.item.cover_info = res.info
+						}
+					}
+				} else {
+					this.item.cover = ''
+					this.item.cover_info = ''
+				}
+			},
 			async save () {
 				try {
+					if (!this.item.name) {
+						uni.showToast({
+							icon:'none',
+							title: '请填写拼图图名'
+						})
+						return
+					}
+					
+					if (!this.coverImage[0]) {
+						uni.showToast({
+							icon: 'none',
+							title: '请上传拼图封面'
+						})
+						return
+					}
+					
+					let res
+					await this.handleCover()
+					
+					
 					if (this._id) {
-						let res = await requestCloud({
-							method: 'puzzleManager.updatePuzzle',
+						// 更新拼图信息
+						let diff = getObjectDiff(this.item, this.originItem)
+						console.log(diff)
+						if (diff) {
+							res = await requestCloud({
+								method: 'puzzleManager.updatePuzzle',
+								data: {
+									_id: this.id,
+									info: diff
+								}
+							})
+							
+						} else {
+							uni.showToast({
+								icon:'none',
+								title: '当前内容没有修改，不能保存'
+							})
+						}
+					} else {
+						// 添加品牌信息
+						res = await requestCloud({
+							method: 'puzzleManager.addPuzzle',
 							data: {
-								_id: this.id,
-								name: this.item.name
+								info: this.item
 							}
+						})
+						
+						if (res) {
+							this._id = res.id
+						}
+						
+					}
+					
+					if (res) {
+						uni.showToast({
+							icon: 'success',
+							title: '保存成功',
+							success: () => {
+								uni.redirectTo({
+									url: `/pages/puzzle/detail?id=${this._id}`
+								})
+							}
+						})
+					} else {
+						uni.showToast({
+							icon:'none',
+							title: '保存出现问题，请稍后再试'
 						})
 					}
 				} catch (e) {

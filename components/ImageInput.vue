@@ -8,23 +8,22 @@
 				<image :src="`${item.url}`"></image>
 			</view>
 		</view>
-	</view>
-	<view v-if="list.length !== max" class="one-wrap"
-		:style="{width: `${w}rpx`, height: `${h}rpx`}" 
-		@click="onclick()">
-		<view class="empty">
-			<uni-icons type="plusempty"></uni-icons>
+		<view v-if="list.length !== max" class="one-wrap"
+			:style="{width: `${w}rpx`, height: `${h}rpx`}" 
+			@click="onclick()">
+			<view class="empty">
+				<uni-icons type="plusempty"></uni-icons>
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
-		name:"UploadImage",
+		name:"ImageInput",
 		props: [
 			'width',
 			'height',
-			'dataid',
 			'defaultValue', // 数组，[{id: 'xxx', url: 'xxxx'}]
 			'disabled',
 			'count'
@@ -34,7 +33,6 @@
 				list: this.defaultValue || [],
 				w: this.width || 200,
 				h: this.height || 200,
-				isUploading: false
 			};
 		},
 		computed: {
@@ -80,11 +78,39 @@
 				})
 			},
 			upload (index) {
-				
+				uni.chooseImage({
+					count: 1,
+					success: async (res) => {
+						let {path, size} = res.tempFiles[0]
+						const maxSize = 1024 * 1024 * 2 // 2m
+						
+						if (size > maxSize) {
+							uni.showToast({
+								icon: 'none',
+								title: '图片大小请限制在2M以内'
+							})
+						} else {
+							let list = this.list.concat()
+							list[index || 0] = {
+								url: path,
+								id: ''
+							}
+							this.list = list
+							this.$emit('change', this.list)
+							
+							
+							// console.log(upload)
+						}
+						
+					},
+					fail(e) {
+						console.log(e)
+					}
+				})
 			},
 			remove (index) {
 				this.list.splice(index, 1)
-				this.$emit('change', {id: this.dataid, value: this.list})
+				this.$emit('change', this.list)
 			},
 		}
 	}

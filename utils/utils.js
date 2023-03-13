@@ -1,3 +1,50 @@
+const uploadImage = async (path, prefix) => {
+	let fileName = path.replace(/(.*\/)*([^.]+).*/ig,"$2")
+	let fileType = path.replace(/.+\./, "")
+	
+	let {width, height} = await getImageInfo(path)
+	let res = await uniCloud.uploadFile({
+		filePath: path,
+		cloudPath: `${prefix || 'public/'}${fileName}.${fileType}`
+	})
+	return {
+		fileID: res.fileID, 
+		info: {width, height},
+	}
+}
+
+const getImageInfo = async (path) => {
+	return new Promise(r => {
+		uni.getImageInfo({
+			src: path,
+			success: (res) => {
+				r(res)
+			},
+			fail: () => {
+				r(res)
+			}
+		})
+	})
+}
+
+const getObjectDiff = (newObject, oldObject) => {
+	let result = {}
+	for (let key in newObject) {
+		let value = newObject[key]
+		if (typeof value === 'object') {
+			if (JSON.stringify(value) !== JSON.stringify(oldObject[key])) {
+				result[key] = value
+			}
+		} else {
+			if (value !== oldObject[key]) {
+				result[key] = value
+			}
+		}
+		
+	}
+	return Object.keys(result).length === 0 ? null : result
+}
+
 const trimArray = (arr) => {
 	return arr.filter(item => {return Boolean(item) === true})
 }
@@ -21,4 +68,4 @@ const handleDBResult = (res) => {
 	}
 }
 
-export { trimArray, handleDBResult }
+export { uploadImage, getImageInfo, getObjectDiff, trimArray, handleDBResult }
